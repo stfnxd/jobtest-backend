@@ -25,11 +25,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $comments = Comment::all()->filter(function ($comments) use ($project) {
-            return $comments->project->id == $project->id;
-        });
 
-        $project->setRelation('comments', $comments);
+        // Loads comments from the project instead of all comments in DB and then filtering them
+        $project->load('comments');
+
         return inertia('Project', [
             'project' => $project,
         ]);
