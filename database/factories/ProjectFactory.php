@@ -18,7 +18,7 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-         'owner' => 1,
+         'owner' => User::factory(),
          'title' => fake()->company(),
          'description' => fake()->realTextBetween(100,300)
 
