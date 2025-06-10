@@ -18,7 +18,7 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_ed' => Project::factory(),
+            'project_id' => Project::factory(),
             'comments' => fake()->realText(800),
         ];
     }
