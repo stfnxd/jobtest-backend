@@ -55,27 +55,45 @@ kode: Test123
 
 ``` Relation morph ```
 
-*Indsæt svar 1*
+Relation morph (polymorphic) er en Relationship man kan bruge i Laravel, hvis man ønsker en model skal tilhøre mange andre modeller, men kun med en association.
+Fordelen ved det er, at det er meget fleksibelt, altså lad os sige, vi har billeder, men billeder kan høre til både en user, et product, eller noget tredje.
+Her ville man kunne oprette en morph relation, med "MorphMany" og "MorphTo", hvor billeder bliver gemt i databasen i en tabel, med et ID og en type, der viser hvilken slags indhold billedet tilhører.
+På den måde undgår man at skulle lave separate user_images eller product_images og kan i stedet håndtere det hele med en tabel og en relationstype.
 
 ``` Spørgsmål 2 ```
 
 ``` Du har en database med mange relationer hvor company er den model hvor alle relationer til et given virksomhed har relationer til. Hvordan sikre du dig, at data slettes i relationsmodellerne, når du sletter en givent virksomhed? ```
 
-*Indsæt Svar 2*
+Det kommer lidt an på, hvordan relationerne er sat op.
+
+Hvis det er almindelige HasMany eller HasOne relationer, kan man bruge onDelete('cascade') i sine migrationer. Det sørger for, at alt data, der tilhører en Company, automatisk bliver slettet af databasen, når virksomheden slettes. Det kræver dog, at foreign keys er korrekt defineret med constrained().
+
+Dog hvis relationerne derimod er sat op som morph relationer (morphOne, morphMany), så virker onDelete('cascade') ikke, fordi der ikke er en klassisk foreign key constraint at arbejde med. I det tilfælde bliver man nødt til selv at håndtere sletningen, typisk ved at tilføje en deleting-event på Company-modellen, hvor man manuelt sletter de relaterede modeller.
 
 
 ``` Spørgsmål 3```
 
 ``` Når du skal lave funktionskode, f.eks. du behandler model data inden du skal sende det til et view, hvor placere du funktionskoden? ```
 
-*Indsæt Svar 3*
+Det kommer an på hvor ansvaret ligger - så alt efter hvilken slags logik ville jeg ligge det i en af følgende: Model, viewmodel, Service eller Resource.
+I dette tilfælde med model data der skal behandles, ville jeg nok gå efter at placere det i en viewmodel.
+
 
 
 ``` Spørgsmål 4 ```
 
 ``` Du sidder og skal arbejde for en kunde, hvis applikation køre uden PHP framework. Du skal lave et input felt og gemme det i databasen. Hvilke overvejelser gør du?  ```
 
-*Indsæt Svar 4*
+Der er mange overvejelser at tage - Dog mest af alt sikkerhedsmæssige ting, da vi ikke har den samme sikkerhed, som kommer automatisk i mange frameworks.
+Jeg ville nok derfor dobbelttjekke OWASP Top 10, for at sikre mig der ikke er noget jeg har misset, hvorefter jeg nok ville gøre følgende:
+
+1. Jeg skal sikre mig at det input felt jeg laver bliver valideret, både på frontend samt backend.
+2. Brug prepared statements, for at undgå SQL injections
+3. Tænk på XSS, og hvordan vi outputter
+4. CSRF Tokens
+5. Tilbage melding til brugeren (Fejl, succes etc.)
+
+Derudover skal der også tænkes på hvodan det bliver gemt i databasen, og omkring hvilke relationer der er i databasen
 
 
 ## Efter testen
