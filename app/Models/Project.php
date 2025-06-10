@@ -14,4 +14,10 @@ class Project extends Model
     protected $fillable = [];
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
     use HasFactory;
+
+    // relation to comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
